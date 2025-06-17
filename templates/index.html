@@ -54,10 +54,10 @@
             height: 500px;
             margin: 20px auto;
             border: 3px solid #333;
-            border-radius: 10px;
             position: relative;
-            background-color: #f9f9f9;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            background-color: rgba(10, 20, 30, 0.9); /* Darker, slightly transparent */
+            box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.05);
+            border-radius: 8px; 
             overflow: hidden;
         }
         
@@ -90,6 +90,7 @@
             left: 50%;
             transform: translateX(-50%);
         }
+        
     </style>
 </head>
 <body>
@@ -99,12 +100,13 @@
             <a href="/" class="nav-btn">Pendulum Experiment</a>
             <a href="/phytheory" class="nav-btn">Theory</a>
             <a href="/quiz" class="nav-btn">Prerequisite</a>
+            <a href="/static/manual.pdf" class="nav-btn" download="Pendulum_Manual.pdf">Download Manual</a>
         </div>
     </nav>
     
     <div class="particles"></div>
     <div class="container">
-        <h1>Simple Pendulum Experiment</h1>
+        <h1>Phase Difference as a Function of Time Difference</h1>
         
         <div class="control-panel">
             <div class="input-group">
@@ -117,6 +119,8 @@
             </div>
             <button id="start-btn">Start</button>
             <button id="reset-btn">Reset</button>
+            <button id="save-btn">Save</button>
+            <button id="load-btn">Load</button>
         </div>
         
         <div class="pendulum-box">
@@ -167,11 +171,14 @@
                 <tbody id="data-body"></tbody>
             </table>
             <button id="average-btn">Calculate Average</button>
+            <button id="download-btn">Download Table</button>
             <div id="average-result"></div>
         </div>
     </div>
     <div class="divider-line"></div>
+    
     <div class="graph-section">
+        <h1>T² vs. Length Graph</h1>
         <canvas id="phaseGraph" width="600" height="300"></canvas>
         <div class="graph-text">
             <h3>Phase Difference Analysis</h3>
@@ -186,5 +193,31 @@
     </div>
     
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <div class="database-section">
+    <h2>Experiment History</h2>
+    <button id="save-btn">Save Current Experiment</button>
+    <button id="load-btn">Load Previous Experiments</button>
+    
+    <div id="saved-experiments" style="margin-top: 20px; display: none;">
+        <h3>Saved Experiments</h3>
+        <table id="history-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Length (cm)</th>
+                    <th>Oscillations</th>
+                    <th>Total Time (s)</th>
+                    <th>Period (s)</th>
+                    <th>Phase Diff.</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+        </table>
+    </div>
+</div>
+
+
 </body>
 </html>

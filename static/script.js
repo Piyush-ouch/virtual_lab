@@ -65,7 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
         isStopwatchRunning: false,
         isPendulumRunning: false,
         trialData: [],
-        phaseChart: null
+        phaseChart: null,
+        startDate: null,
+        lastZeroCrossingDate: null
     };
 
     // ==================== INITIALIZATION ====================
@@ -172,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
         startStopwatch();
 
         if (state.animationId) cancelAnimationFrame(state.animationId);
-        state.animationId = requestAnimationFrame((t) => animatePendulum(t, oscillations, lengthCm));
+        state.animationId = requestAnimationFrame(() => animatePendulum(oscillations, lengthCm));
     }
 
     function resetPendulumState() {
@@ -184,56 +186,64 @@ document.addEventListener('DOMContentLoaded', function() {
         state.periodMeasurements = [];
         state.phaseMeasurements = [];
         state.isFreshStart = true;
+        state.startDate = null;
+        state.lastZeroCrossingDate = null;
     }
 
-    function animatePendulum(timestamp, oscillations, lengthCm) {
-        if (!state.startTime) {
-            state.startTime = timestamp;
-            state.lastZeroCrossingTime = 0;
+    function animatePendulum(oscillations, lengthCm) {
+        // Use Date.now() for robust timing
+        if (!state.startDate) {
+            state.startDate = Date.now();
+            state.lastZeroCrossingDate = state.startDate;
         }
-        
-        const adjustedTimestamp = timestamp - state.pauseTime;
-        const elapsed = (adjustedTimestamp - state.startTime) / 1000;
+        const elapsed = (Date.now() - state.startDate) / 1000;
 
         const lengthM = lengthCm / 100;
         state.currentPeriod = 2 * Math.PI * Math.sqrt(lengthM / constants.GRAVITY);
-        const angle = state.startAngle * Math.cos(2 * Math.PI * elapsed / state.currentPeriod);
 
-        state.phaseDifference = (2 * Math.PI * (elapsed % state.currentPeriod)) / state.currentPeriod;
+        // Calculate phase difference using phase in cycle
+        const phaseInCycle = (elapsed % state.currentPeriod) / state.currentPeriod;
+        state.phaseDifference = 2 * Math.PI * phaseInCycle;
         elements.phaseDisplay.textContent = state.phaseDifference.toFixed(3);
+
+        const angle = state.startAngle * Math.cos(2 * Math.PI * elapsed / state.currentPeriod);
 
         elements.stringContainer.style.transform = `translateX(-50%) rotate(${angle}deg)`;
 
         // Detect zero crossings (when pendulum passes center)
         if (Math.abs(angle) < 5 && Math.sign(angle) !== Math.sign(state.lastAngle)) {
             state.oscillationCount += 0.5;
-            
+
             // Only record full oscillations (every 2 zero crossings)
             if (state.oscillationCount % 1 === 0) {
-                const actualPeriod = elapsed - state.lastZeroCrossingTime;
-                state.lastZeroCrossingTime = elapsed;
-                
+                const now = Date.now();
+                const actualPeriod = (now - state.lastZeroCrossingDate) / 1000;
+                state.lastZeroCrossingDate = now;
+
                 state.periodMeasurements.push(actualPeriod);
                 state.phaseMeasurements.push(state.phaseDifference);
-                
-                // Update displays
+
                 elements.periodDisplay.textContent = actualPeriod.toFixed(4);
                 elements.totalTimeDisplay.textContent = elapsed.toFixed(2);
             }
         }
 
         // Check completion condition
-        if (state.oscillationCount >= oscillations && Math.abs(angle) < 2) {
-            stopStopwatch();
-            addDataToTable(oscillations, elapsed);
-            state.isPendulumRunning = false;
-            state.isFreshStart = true;
-            updateButtonStates();
-            return;
+        if (state.oscillationCount >= oscillations) {
+            // Check if pendulum is back near the starting angle (within a small threshold)
+            if (Math.abs(angle - state.startAngle) < 2) {
+                stopStopwatch();
+                addDataToTable(oscillations, elapsed);
+                state.isPendulumRunning = false;
+                state.isFreshStart = true;
+                updateButtonStates();
+                state.startDate = null; // Reset for next run
+                return;
+            }
         }
 
         state.lastAngle = angle;
-        state.animationId = requestAnimationFrame((t) => animatePendulum(t, oscillations, lengthCm));
+        state.animationId = requestAnimationFrame(() => animatePendulum(oscillations, lengthCm));
     }
 
     function resetPendulum() {
@@ -312,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const lengthCm = parseInt(elements.lengthInput.value) || 50;
             
             if (state.animationId) cancelAnimationFrame(state.animationId);
-            state.animationId = requestAnimationFrame((t) => animatePendulum(t, oscillations, lengthCm));
+            state.animationId = requestAnimationFrame(() => animatePendulum(oscillations, lengthCm));
             
             state.lastResumeTime = Date.now();
         }

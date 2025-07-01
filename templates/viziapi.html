@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViziAI Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+    --sidebar-bg: #1a1333;
+    --sidebar-border: #2d1e4f;
+    --main-bg: #18122b;
+    --chat-bg: #211a3c;
+    --bubble-user: linear-gradient(135deg, #7f53ac 0%, #647dee 100%);
+    --bubble-ai: #2d1e4f;
+    --bubble-border: #a084ee;
+    --text-main: #f3f6fa;
+    --text-secondary: #b8b8d1;
+    --accent: #a084ee;
+}
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: var(--main-bg);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 320px;
+            background: var(--sidebar-bg);
+            border-right: 1.5px solid var(--sidebar-border);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            z-index: 2;
+        }
+        .sidebar-header {
+            padding: 1.5rem 1.2rem 1rem 1.2rem;
+            border-bottom: 1px solid var(--sidebar-border);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .sidebar-header i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+        .sidebar-header span {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 1px;
+        }
+        .sidebar .new-chat-btn {
+            margin: 1rem 1.2rem;
+            background: var(--accent);
+            color: #18181b;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.7rem 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .sidebar .new-chat-btn:hover {
+            background: #11999E;
+            color: #fff;
+        }
+        .chat-history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 0.5rem 1rem 0.5rem;
+        }
+        .chat-history-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-history-list::-webkit-scrollbar-thumb {
+            background: #23232a;
+            border-radius: 4px;
+        }
+        .chat-history-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            margin: 0.2rem 0;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: background 0.2s, color 0.2s;
+        }
+        .chat-history-item.active, .chat-history-item:hover {
+            background: #23232a;
+            color: var(--accent);
+        }
+        .sidebar-footer {
+            padding: 1rem 1.2rem;
+            border-top: 1px solid var(--sidebar-border);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        /* Main Chat Area */
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--main-bg);
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-header {
+            padding: 2.5rem 0 1.5rem 0;
+            text-align: center;
+            color: var(--accent);
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #23232a;
+            background: var(--main-bg);
+        }
+        .main-header span {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-weight: 400;
+            display: block;
+            margin-top: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2.5rem 0 2.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            background: var(--chat-bg);
+        }
+        .chat-message {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.7rem;
+            padding: 0 2.5rem;
+        }
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+        .chat-bubble {
+            max-width: 65%;
+            padding: 1.1rem 1.5rem;
+            border-radius: 18px;
+            font-size: 1.08rem;
+            line-height: 1.6;
+            box-shadow: 0 2px 18px #30e3ca30;
+            word-break: break-word;
+            border: 1.5px solid var(--bubble-border);
+            position: relative;
+            background: var(--bubble-ai);
+            color: var(--text-main);
+            font-weight: 500;
+        }
+        .chat-message.user .chat-bubble {
+            background: var(--bubble-user);
+            color: #002b36;
+            border-bottom-right-radius: 6px;
+            border-bottom-left-radius: 18px;
+            border: 1.5px solid var(--bubble-border);
+            font-weight: 600;
+        }
+        .chat-message.ai .chat-bubble {
+            background: var(--bubble-ai);
+            color: var(--text-main);
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 18px;
+            border: 1.5px solid var(--bubble-border);
+        }
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 0 12px #30e3ca80;
+        }
+        .chat-message.user .chat-avatar {
+            background: var(--bubble-user);
+            color: #002b36;
+        }
+        .chat-message.ai .chat-avatar {
+            background: #23232a;
+            color: var(--accent);
+        }
+        .chat-input-area {
+            border-top: 1.5px solid #23232a;
+            background: var(--main-bg);
+            padding: 1.2rem 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .chat-input-area input[type="file"] {
+            display: none;
+        }
+        .chat-input {
+            flex: 1;
+            border: 1.5px solid var(--bubble-border);
+            border-radius: 20px;
+            padding: 0.9rem 1.4rem;
+            font-size: 1.08rem;
+            background: #23232a;
+            color: var(--text-main);
+            outline: none;
+            font-weight: 500;
+            transition: border 0.2s, background 0.2s;
+        }
+        .chat-input:focus {
+            border-color: var(--accent);
+            background: #23232a;
+            color: #fff;
+        }
+        .chat-send-btn, .chat-upload-btn {
+            background: #23232a;
+            color: var(--accent);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            box-shadow: 0 0 8px #30e3ca60;
+        }
+        .chat-send-btn:hover, .chat-upload-btn:hover {
+            background: var(--accent);
+            color: #23232a;
+        }
+        .file-preview {
+            margin-left: 1rem;
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+        .typing-indicator {
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            display: inline-block;
+            position: relative;
+        }
+        .typing-indicator::after {
+            content: '';
+            display: inline-block;
+            width: 1em;
+            vertical-align: bottom;
+            animation: dots 1s steps(3, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        @media (max-width: 900px) {
+            .sidebar { width: 70px; min-width: 70px; }
+            .sidebar-header span { display: none; }
+            .sidebar .new-chat-btn { font-size: 0.9rem; padding: 0.5rem 0.7rem; }
+            .main-header { font-size: 1.2rem; padding: 1.2rem 0 0.7rem 0; }
+            .chat-history { padding: 1rem 0 1rem 0; }
+            .chat-message { padding: 0 0.7rem; }
+            .chat-input-area { padding: 0.7rem 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span style="font-size:2rem;display:flex;align-items:center;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="10" r="6" stroke="#a084ee" stroke-width="2" fill="none"/>
+                        <rect x="9" y="16" width="6" height="2.5" rx="1.2" fill="#a084ee"/>
+                        <rect x="10" y="19" width="4" height="1.5" rx="0.75" fill="#a084ee" opacity="0.7"/>
+                    </svg>
+                </span>
+                <span>ViziAI</span>
+            </div>
+            <button class="new-chat-btn" id="newChatBtn"><i class="fas fa-plus"></i> New chat</button>
+            <div class="chat-history-list" id="chatHistoryList">
+                <!-- Example chat history items -->
+                <!--
+                <div class="chat-history-item active"><i class="fas fa-comments"></i> My First Chat</div>
+                <div class="chat-history-item"><i class="fas fa-comments"></i> Physics Help</div>
+                -->
+            </div>
+            <div class="sidebar-footer">
+                <i class="fas fa-user-circle"></i> Guest
+            </div>
+        </aside>
+        <!-- Main Chat Area -->
+        <main class="main-chat">
+            <div class="main-header">
+                What can I help with?
+                <span>Ask anything about your experiment, upload images or PDFs, and get instant help!</span>
+            </div>
+            <div class="chat-history" id="chatHistory">
+                <!-- Chat bubbles will appear here -->
+            </div>
+            <form class="chat-input-area" id="chatForm" autocomplete="off">
+                <button type="button" class="chat-upload-btn" id="uploadBtn" title="Upload file">
+                    <i class="fas fa-paperclip"></i>
+                </button>
+                <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.pdf">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Ask anything" autocomplete="off">
+                <button type="submit" class="chat-send-btn" id="sendBtn" title="Send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <span class="file-preview" id="filePreview"></span>
+            </form>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatHistory = document.getElementById('chatHistory');
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const filePreview = document.getElementById('filePreview');
+        const chatHistoryList = document.getElementById('chatHistoryList');
+        const newChatBtn = document.getElementById('newChatBtn');
+
+        let uploadingFile = null;
+        let chatSessions = [
+            {id: 1, name: "My First Chat", messages: []}
+        ];
+        let currentSession = 1;
+
+        // Sidebar: Add chat history items
+        function renderChatHistoryList() {
+            chatHistoryList.innerHTML = '';
+            chatSessions.forEach(session => {
+                const div = document.createElement('div');
+                div.className = 'chat-history-item' + (session.id === currentSession ? ' active' : '');
+                div.innerHTML = `<i class="fas fa-comments"></i> ${session.name}`;
+                div.onclick = () => {
+                    saveCurrentSession();
+                    currentSession = session.id;
+                    renderChatHistoryList();
+                    renderChatSession();
+                };
+                chatHistoryList.appendChild(div);
+            });
+        }
+
+        // Sidebar: New chat
+        newChatBtn.addEventListener('click', () => {
+            saveCurrentSession();
+            const newId = chatSessions.length ? Math.max(...chatSessions.map(s => s.id)) + 1 : 1;
+            chatSessions.push({id: newId, name: "New Chat", messages: []});
+            currentSession = newId;
+            renderChatHistoryList();
+            renderChatSession();
+        });
+
+        // File upload button triggers file input
+        uploadBtn.addEventListener('click', () => fileInput.click());
+
+        // Show file name when selected
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                uploadingFile = fileInput.files[0];
+                filePreview.textContent = uploadingFile.name;
+            } else {
+                uploadingFile = null;
+                filePreview.textContent = '';
+            }
+        });
+
+        // Handle chat form submit
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const userMsg = chatInput.value.trim();
+            if (!userMsg && !uploadingFile) return;
+
+            // Add user message to chat
+            appendMessage('user', userMsg, uploadingFile, true);
+
+            // Prepare form data
+            const formData = new FormData();
+            if (userMsg) formData.append('text_input', userMsg);
+            if (uploadingFile) formData.append('file_input', uploadingFile);
+
+            // Show typing indicator
+            appendTypingIndicator();
+
+            // Disable input while waiting
+            chatInput.disabled = true;
+            sendBtn.disabled = true;
+            uploadBtn.disabled = true;
+
+            try {
+                const response = await fetch('/viziapi', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                removeTypingIndicator();
+
+                if (data.status === 'success') {
+                    // Remove leading stars and format line breaks
+                    const formatted = data.response
+                        .replace(/^\s*\*\s?/gm, '')
+                        .replace(/\n/g, '<br>');
+                    appendMessage('ai', formatted, null, true);
+                } else {
+                    appendMessage('ai', `<span class="text-danger">Error: ${data.message}</span>`, null, true);
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                appendMessage('ai', `<span class="text-danger">Network error: ${error.message}</span>`, null, true);
+            } finally {
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                uploadBtn.disabled = false;
+                chatInput.value = '';
+                fileInput.value = '';
+                filePreview.textContent = '';
+                uploadingFile = null;
+                chatInput.focus();
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
+        });
+
+        function appendMessage(sender, text, file = null, save = false) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${sender}`;
+            let avatar, bubble;
+
+            if (sender === 'user') {
+                avatar = `<div class="chat-avatar"><i class="fas fa-user"></i></div>`;
+            } else {
+                avatar = `<div class="chat-avatar"><i class="fas fa-robot"></i></div>`;
+            }
+
+            bubble = `<div class="chat-bubble">${text || ''}`;
+            if (file) {
+                if (file.type && file.type.startsWith('image/')) {
+                    const imgURL = URL.createObjectURL(file);
+                    bubble += `<br><img src="${imgURL}" alt="uploaded image" style="max-width:120px;max-height:120px;border-radius:8px;margin-top:8px;">`;
+                } else if (file.name) {
+                    bubble += `<br><i class="fas fa-file-pdf"></i> ${file.name}`;
+                }
+            }
+            bubble += `</div>`;
+
+            if (sender === 'user') {
+                msgDiv.innerHTML = bubble + avatar;
+            } else {
+                msgDiv.innerHTML = avatar + bubble;
+            }
+            chatHistory.appendChild(msgDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // Save to session
+            if (save) {
+                const session = chatSessions.find(s => s.id === currentSession);
+                if (session) {
+                    session.messages.push({sender, text, fileName: file?.name || null, fileType: file?.type || null});
+                }
+            }
+        }
+
+        function appendTypingIndicator() {
+            removeTypingIndicator();
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-message ai typing';
+            typingDiv.innerHTML = `<div class="chat-avatar"><i class="fas fa-robot"></i></div>
+                <div class="chat-bubble"><span class="typing-indicator">ViziAI is thinking</span></div>`;
+            chatHistory.appendChild(typingDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typing = chatHistory.querySelector('.chat-message.ai.typing');
+            if (typing) typing.remove();
+        }
+
+        function renderChatSession() {
+            chatHistory.innerHTML = '';
+            const session = chatSessions.find(s => s.id === currentSession);
+            if (session && session.messages.length) {
+                session.messages.forEach(msg => {
+                    appendMessage(msg.sender, msg.text, msg.fileName ? {name: msg.fileName, type: msg.fileType} : null, false);
+                });
+            }
+        }
+
+        function saveCurrentSession() {
+            // No-op for now, as messages are already saved in appendMessage
+        }
+
+        // Initial render
+        renderChatHistoryList();
+        renderChatSession();
+    });
+    </script>
+</body>
+</html>

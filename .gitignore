@@ -1,6 +1,18 @@
-venv/
-*.pyc
+# Python
 __pycache__/
-*.sqlite
-*.db
-*.env
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+env/
+venv/
+instance/
+*.sqlite3
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

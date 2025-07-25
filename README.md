@@ -52,7 +52,21 @@ This virtual lab replicates the real-world pendulum experiment, allowing users t
 
 ## 📸 Screenshots
 
-> Screenshot 2025-07-25 184301.png
+### 🔁 Pendulum Simulation Interface
+![Pendulum Simulation](assets/interface.png)
+
+### 📐 Phase Difference Graph
+![Phase Graph](assets/screenshots/phase-graph.png)
+
+### 📘 Theory Page
+![Theory Section](assets/screenshots/theory-page.png)
+
+### ❓ Prerequisite Quiz
+![Quiz Interface](assets/screenshots/quiz.png)
+
+### 🤖 ViziAI Chat Interface
+![ViziAI](assets/screenshots/viziapi-chat.png)
+
 
 ---
 

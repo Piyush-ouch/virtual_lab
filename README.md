@@ -1,63 +1,94 @@
-﻿# Virtual-lab-for-phase-difference-experiment-
- A fully interactive virtual physics lab for studying pendulum motion and phase difference
+# 🧪 Virtual Lab: Pendulum Simulation & Phase Difference Analyzer
 
-🌟 Overview
-Pendulum VLab is an immersive virtual laboratory developed by Piyush Jangade and Sneha Chaurasia from MIT Academy of Engineering. This project combines physics education with modern web technologies to create an engaging learning experience about pendulum motion and phase difference concepts.
+A fully interactive web-based virtual lab built using **Python Flask**, **JavaScript**, **Chart.js**, and **SQLite** that simulates a simple pendulum experiment with **phase difference calculation**, **data recording**, **AI assistance**, and a complete learning flow from theory to quiz.
 
-🎯 Key Features
-Real-time Pendulum Simulation with adjustable parameters
+> 🎓 Built by: Piyush Jangade & Sneha Chaurasia  
+> 📧 Email: piyushjangade06@gmail.com
 
-Phase Difference Visualization with mathematical calculations
+---
 
-Data Collection & Analysis with CSV export
+## 📌 Table of Contents
 
-Experiment History with save/load functionality
+- [Overview](#overview)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Tech Stack](#tech-stack)
+- [Setup & Installation](#setup--installation)
+- [Project Structure](#project-structure)
+- [Usage Guide](#usage-guide)
+- [Theory](#theory)
+- [Prerequisite Quiz](#prerequisite-quiz)
+- [AI ViziAPI Interface](#ai-viziapi-interface)
+- [Manual](#manual)
+- [Roadmap](#roadmap)
+- [License](#license)
 
-Interactive Theory Section with animations
+---
 
-Prerequisite Quiz to test fundamental knowledge
+## 📖 Overview
 
-ViziAI Assistant for instant help (Gemini AI powered)
+This virtual lab replicates the real-world pendulum experiment, allowing users to:
+- Set initial angle and string length.
+- Calculate average time period and phase difference.
+- Save and load experimental data.
+- Export results as CSV.
+- Learn the physics behind the experiment with a guided theory section.
+- Test themselves using a built-in quiz.
+- Use an integrated AI interface (powered by Gemini/Replicate) for smart interaction with experiment content.
 
-Responsive Design works on all devices
+---
 
-🛠️ Tech Stack
-Frontend
-HTML5, CSS3 (with animations)
+## ✨ Features
 
-JavaScript (ES6+)
+- ⏱️ Real-time pendulum animation  
+- 🌀 Phase difference and time difference calculation  
+- 📊 Interactive data table with average period calculator  
+- 💾 Save, load & export experiment data (CSV)  
+- 📘 Built-in Theory and Prerequisite Quiz section  
+- 🤖 ViziAI-powered document and image assistant  
+- 📄 Styled downloadable manual (PDF)
 
-Chart.js for data visualization
+---
 
-Canvas API for pendulum animation
+## 📸 Screenshots
 
-Backend
-Python Flask
+> _Add relevant screenshots here (e.g. pendulum interface, quiz, AI chat, theory section, etc.)_
 
-SQLAlchemy (SQLite database)
+---
 
-Google Gemini AI API
+## 🛠️ Tech Stack
 
-Replicate API for image generation
+| Frontend        | Backend     | Database | AI/ML APIs        |
+|-----------------|-------------|----------|-------------------|
+| HTML5, CSS3, JS | Flask (Python) | SQLite    | Google Gemini API, Replicate SD |
 
-Deployment
-Ready for deployment on Render, Vercel, or any Python hosting
+Other Libraries:
+- Chart.js (for phase graph)
+- Bootstrap 5 (for AI UI)
+- PyPDF2 (PDF parsing)
+- dotenv, Flask-Limiter, SQLAlchemy
 
-📚 Physics Concepts Covered
-Simple Harmonic Motion (SHM)
+---
 
-Phase difference calculations (Δφ = (2π/T) × Δt)
+## ⚙️ Setup & Installation
 
-Time period vs. pendulum length relationship
+### Prerequisites
+- Python 3.8+
+- Node.js (if planning frontend builds)
+- Internet (for AI API integration)
 
-Energy conservation in pendulum systems
+### Instructions
 
-Simple vs. compound pendulum dynamics
+```bash
+git clone https://github.com/Piyush-ouch/virtual_lab.git
+cd virtual_lab
 
-🚀 Getting Started
-Prerequisites
-Python 3.8+
+# Set up virtual env
+python -m venv venv
+source venv/bin/activate  # On Windows use venv\Scripts\activate
 
-Node.js (for development)
+# Install Python dependencies
+pip install -r requirements.txt
 
-Google Gemini API key (for AI features)
+# Run the Flask server
+python app.py

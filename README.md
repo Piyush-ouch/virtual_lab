@@ -112,28 +112,6 @@ FLASK_SECRET_KEY=your_secret_key
 
 ---
 
-## 🗂️ Project Structure
-
-```
-virtual_lab/
-│
-├── templates/
-│   ├── index.html           # Main pendulum UI
-│   ├── phytheory.html       # Theory content
-│   ├── quiz.html            # MCQ quiz interface
-│   ├── viziapi.html         # AI interface
-│
-├── static/
-│   ├── style.css            # Futuristic UI styles
-│   └── script.js            # Pendulum logic and interactivity
-│
-├── uploads/                 # Temporary file uploads for ViziAPI
-├── manual.pdf               # Lab manual in PDF
-├── pendulum_experiments.db  # SQLite database
-├── app.py                   # Flask app
-└── README.md                # You’re here!
-```
-
 ---
 
 ## 🚀 Usage Guide

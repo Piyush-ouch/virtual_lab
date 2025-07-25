@@ -52,7 +52,7 @@ This virtual lab replicates the real-world pendulum experiment, allowing users t
 
 ## 📸 Screenshots
 
-> _Add relevant screenshots here (e.g. pendulum interface, quiz, AI chat, theory section, etc.)_
+> Screenshot 2025-07-25 184301.png
 
 ---
 

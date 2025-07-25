@@ -78,25 +78,7 @@ Other Libraries:
 - Internet (for AI API integration)
 
   
- # PROJECT STURCTURE
- 
-  virtual_lab/
-│
-├── templates/
-│   ├── index.html           # Main pendulum UI
-│   ├── phytheory.html       # Theory content
-│   ├── quiz.html            # MCQ quiz interface
-│   ├── viziapi.html         # AI interface
-│
-├── static/
-│   ├── style.css            # Futuristic UI styles
-│   └── script.js            # Pendulum logic and interactivity
-│
-├── uploads/                 # Temporary file uploads for ViziAPI
-├── manual.pdf               # Lab manual in PDF
-├── pendulum_experiments.db  # SQLite database
-├── app.py                   # Flask app
-└── README.md                # You’re here!
+
 
 
 ### Instructions
@@ -114,5 +96,28 @@ pip install -r requirements.txt
 
 # Run the Flask server
 python app.py
+
+## 🗂️ Project Structure
+
+```
+virtual_lab/
+│
+├── templates/
+│   ├── index.html           # Main pendulum UI
+│   ├── phytheory.html       # Theory content
+│   ├── quiz.html            # MCQ quiz interface
+│   ├── viziapi.html         # AI interface
+│
+├── static/
+│   ├── style.css            # Futuristic UI styles
+│   └── script.js            # Pendulum logic and interactivity
+│
+├── uploads/                 # Temporary file uploads for ViziAPI
+├── manual.pdf               # Lab manual in PDF
+├── pendulum_experiments.db  # SQLite database
+├── app.py                   # Flask app
+└── README.md                # You’re here!
+```
+
 
 

@@ -1,4 +1,4 @@
-# 🧪 Virtual Lab: Pendulum Simulation & Phase Difference Analyzer
+s# 🧪 Virtual Lab: Pendulum Simulation & Phase Difference Analyzer
 
 A fully interactive web-based virtual lab built using **Python Flask**, **JavaScript**, **Chart.js**, and **SQLite** that simulates a simple pendulum experiment with **phase difference calculation**, **data recording**, **AI assistance**, and a complete learning flow from theory to quiz.
 
@@ -77,27 +77,7 @@ Other Libraries:
 - Node.js (if planning frontend builds)
 - Internet (for AI API integration)
 
-  
-
-
-
-### Instructions
-
-```bash
-git clone https://github.com/Piyush-ouch/virtual_lab.git
-cd virtual_lab
-
-# Set up virtual env
-python -m venv venv
-source venv/bin/activate  # On Windows use venv\Scripts\activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Run the Flask server
-python app.py
-
-## 🗂️ Project Structure
+  ## 🗂️ Project Structure
 
 ```
 virtual_lab/
@@ -118,6 +98,24 @@ virtual_lab/
 ├── app.py                   # Flask app
 └── README.md                # You’re here!
 ```
+
+### Instructions
+
+```bash
+git clone https://github.com/Piyush-ouch/virtual_lab.git
+cd virtual_lab
+
+# Set up virtual env
+python -m venv venv
+source venv/bin/activate  # On Windows use venv\Scripts\activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Run the Flask server
+python app.py
+
+
 
 
 
